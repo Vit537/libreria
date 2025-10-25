@@ -1,0 +1,81 @@
+name: Deploy Frontend (Static) to Cloud Storage
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-storage-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  REGION: us-central1
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-upload:
+    name: Build and Upload Static Site
+    runs-on: ubuntu-latest
+    concurrency:
+      group: frontend-storage
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build (static export)
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_OUTPUT_MODE: 'export'
+        run: |
+          echo "Using NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
+          npm run build
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Upload to Cloud Storage (rsync)
+        env:
+          BUCKET_NAME: ${{ vars.GCS_BUCKET }}
+        run: |
+          if [ -z "$BUCKET_NAME" ]; then echo "ERROR: Define repo variable GCS_BUCKET con el nombre del bucket"; exit 1; fi
+          # Sincroniza el contenido generado a gs://$BUCKET_NAME
+          gcloud storage rsync --recursive --delete ./frontend/out gs://$BUCKET_NAME
+
+      - name: Set long cache for static assets
+        if: always()
+        env:
+          BUCKET_NAME: ${{ vars.GCS_BUCKET }}
+        run: |
+          # Acelera _next/static con cache de 1 año
+          gcloud storage objects update --add-acl=AllUsers:R --content-type='text/plain' gs://$BUCKET_NAME/_next/static/ --recursive || true
+          gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" gs://$BUCKET_NAME/_next/static/** || true
+
+      - name: Show bucket URL
+        env:
+          BUCKET_NAME: ${{ vars.GCS_BUCKET }}
+        run: |
+          echo "Bucket URL: https://storage.googleapis.com/$BUCKET_NAME/index.html"

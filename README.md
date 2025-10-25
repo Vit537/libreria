@@ -185,11 +185,10 @@ git commit -m "Initial commit with Cloud Run configuration"
 git push origin main
 ```
 
-GitHub Actions automáticamente:
-1. Construirá las imágenes Docker
-2. Las subirá a Artifact Registry
-3. Desplegará el backend en Cloud Run
-4. Desplegará el frontend en Cloud Run
+GitHub Actions automáticamente (ver `GITHUB_ACTIONS_SETUP.md`):
+1. Construirá la imagen Docker del backend y la subirá a Artifact Registry
+2. Desplegará el backend en Cloud Run (`.github/workflows/backend-deploy.yml`)
+3. Construirá el frontend como sitio estático y lo sincronizará a Cloud Storage (`.github/workflows/frontend-storage-deploy.yml`)
 
 ### 7. Actualizar CORS y ALLOWED_HOSTS
 
@@ -267,6 +266,7 @@ gcloud run services list --region=us-central1
 - Restringe `ALLOWED_HOSTS` y `CORS_ALLOWED_ORIGINS`
 
 ## 📚 Documentación Adicional
+- [Guía de GitHub Actions para GCP](./GITHUB_ACTIONS_SETUP.md)
 
 - [Django Documentation](https://docs.djangoproject.com/)
 - [Next.js Documentation](https://nextjs.org/docs)
