@@ -74,3 +74,6 @@ htmlcov/
 
 # OS
 Thumbs.db
+
+# Ignore Google service account key (don't commit private keys)
+big-axiom-474503-m5-8e2c89a578bd.json
