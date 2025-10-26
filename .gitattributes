@@ -1,0 +1,9 @@
+# Enforce consistent LF line endings for scripts and shell files
+# This avoids Windows Git converting LF->CRLF for these executable scripts.
+*.sh text eol=lf
+
+# Explicit rule for the docker entrypoint script
+/backend/docker-entrypoint.sh text eol=lf
+
+# Keep Python source with LF as well
+*.py text eol=lf

@@ -1,13 +1,12 @@
 name: Deploy Backend to Cloud Run
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'backend/**'
-      - 'docker-compose.yml'
-      - '.github/workflows/backend-deploy.yml'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
 
 permissions:
   contents: read
@@ -15,17 +14,13 @@ permissions:
 
 env:
   REGION: us-central1
-  REPOSITORY: libreria
+  REPOSITORY: prueba-v2-registry
   SERVICE_NAME: libreria-backend
   IMAGE_NAME: backend
 
 jobs:
   build-and-deploy:
-    name: Build, Push, and Deploy
     runs-on: ubuntu-latest
-    concurrency:
-      group: backend-cloud-run
-      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,44 +34,32 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          install_components: 'beta'
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: Build and Push Docker image
+      - name: Build and push Docker image
         id: build
-        env:
-          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |
-          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${PROJECT_ID}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
-          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_OUTPUT
-          docker build -t "$IMAGE_URI" -f backend/Dockerfile ./backend
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "Building $IMAGE_URI"
+          docker build -t "$IMAGE_URI" ./backend
           docker push "$IMAGE_URI"
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
       - name: Deploy to Cloud Run
         env:
-          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
           CLOUD_SQL_CONNECTION_NAME: ${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
-          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
         run: |
-          IMAGE_URI=${{ steps.build.outputs.IMAGE_URI }}
           gcloud run deploy "${{ env.SERVICE_NAME }}" \
-            --image "$IMAGE_URI" \
-            --region "${{ env.REGION }}" \
+            --image "${{ env.IMAGE_URI }}" \
             --platform managed \
+            --region "${{ env.REGION }}" \
             --allow-unauthenticated \
-            --add-cloudsql-instances "$CLOUD_SQL_CONNECTION_NAME" \
-            --memory 512Mi \
-            --cpu 1 \
-            --max-instances 3 \
-            --set-env-vars "DEBUG=False,SECRET_KEY=$DJANGO_SECRET_KEY,DB_NAME=$DB_NAME,DB_USER=$DB_USER,DB_PASSWORD=$DB_PASSWORD,DB_HOST=$DB_HOST,ALLOWED_HOSTS=$ALLOWED_HOSTS"
+            --add-cloudsql-instances "${{ secrets.CLOUD_SQL_CONNECTION_NAME }}" \
+            --set-env-vars "DB_NAME=${{ secrets.DB_NAME }},DB_USER=${{ secrets.DB_USER }},DB_PASSWORD=${{ secrets.DB_PASSWORD }},DB_HOST=${{ secrets.DB_HOST }},DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" \
+            --port 8000
 
       - name: Show service URL
         run: |
-          gcloud run services describe "${{ env.SERVICE_NAME }}" --region "${{ env.REGION }}" --format='value(status.url)'
+          gcloud run services describe "${{ env.SERVICE_NAME }}" --region "${{ env.REGION }}" --format="value(status.url)"
