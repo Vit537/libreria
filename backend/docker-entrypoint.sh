@@ -18,6 +18,10 @@ fi
 echo "Ejecutando migraciones..."
 python manage.py migrate --noinput
 
+# Crear superuser si no existe
+echo "👤 Verificando superuser..."
+python superuser.py
+
 # Recolectar archivos estáticos
 echo "Recolectando archivos estáticos..."
 python manage.py collectstatic --noinput
