@@ -47,7 +47,7 @@ jobs:
           IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           echo "Building $IMAGE_URI"
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL=https://libreria-backend-930184937279.us-central1.run.app \
+            --build-arg NEXT_PUBLIC_API_URL=https://libreria-backend-930184937279.us-central1.run.app/api \
             -t "$IMAGE_URI" \
             ./frontend
           docker push "$IMAGE_URI"
@@ -61,7 +61,7 @@ jobs:
             --platform managed \
             --region "${{ env.REGION }}" \
             --allow-unauthenticated \
-            --set-env-vars "NEXT_PUBLIC_API_URL=https://libreria-backend-930184937279.us-central1.run.app" \
+            --set-env-vars "NEXT_PUBLIC_API_URL=https://libreria-backend-930184937279.us-central1.run.app/api" \
             --port 3000
 
       - name: Show service URL
