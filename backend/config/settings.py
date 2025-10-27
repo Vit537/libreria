@@ -218,6 +218,12 @@ CORS_ALLOWED_ORIGINS = config(
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Trusted origins for CSRF (include the Cloud Run URL).
+# Provide as comma-separated list in the env var `CSRF_TRUSTED_ORIGINS`.
+# If not provided, include the backend Cloud Run URL used in this project
+# so admin/login POSTs succeed.
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in config('CSRF_TRUSTED_ORIGINS', default='https://libreria-backend-930184937279.us-central1.run.app').split(',') if o.strip()]
+
 # Security Settings for Production
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
