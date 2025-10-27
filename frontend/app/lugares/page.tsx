@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { getLugares, Lugar } from '@/lib/api';
 import {
   Container,
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -16,6 +15,7 @@ import {
   Alert,
   Skeleton,
 } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { motion, AnimatePresence } from 'framer-motion';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -81,7 +81,7 @@ export default function LugaresPage() {
         </Typography>
         <Grid container spacing={3}>
           {[1, 2, 3].map((n) => (
-            <Grid item xs={12} md={4} key={n}>
+            <Grid xs={12} md={4} key={n}>
               <Card>
                 <CardContent>
                   <Skeleton variant="circular" width={60} height={60} />
@@ -161,8 +161,8 @@ export default function LugaresPage() {
               const tipoInfo = getTipoColor(lugar.tipo);
               const IconComponent = tipoInfo.icon;
 
-              return (
-                <Grid item xs={12} sm={6} md={4} key={lugar.id}>
+                return (
+                <Grid xs={12} sm={6} md={4} key={lugar.id}>
                   <MotionCard
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}

@@ -69,7 +69,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Container, Grid, Card, CardContent, Typography, Box, Button } from '@mui/material';
+import { Container, Card, CardContent, Typography, Box, Button } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { motion } from 'framer-motion';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
@@ -134,7 +135,7 @@ export default function Home() {
 
       <Grid container spacing={4} mb={8}>
         {cards.map((card, index) => (
-          <Grid item xs={12} md={4} key={card.title} data-aos="fade-up" data-aos-delay={index * 100}>
+          <Grid xs={12} md={4} key={card.title} data-aos="fade-up" data-aos-delay={index * 100}>
             <Link href={card.href} style={{ textDecoration: 'none' }}>
               <MotionCard
                 whileHover={{ 
@@ -200,7 +201,7 @@ export default function Home() {
         </Typography>
         <Grid container spacing={3} mt={2}>
           {benefits.map((benefit, index) => (
-            <Grid item xs={12} sm={6} key={index}>
+            <Grid xs={12} sm={6} key={index}>
               <Box display="flex" alignItems="center" gap={2}>
                 <CheckCircleIcon sx={{ fontSize: 32 }} />
                 <Typography variant="h6">{benefit}</Typography>

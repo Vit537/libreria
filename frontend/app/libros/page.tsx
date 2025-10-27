@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getLibros, Libro } from '@/lib/api';
 import { 
   Container, 
-  Grid, 
+  
   Card, 
   CardContent, 
   Typography, 
@@ -16,6 +16,7 @@ import {
   Alert,
   Skeleton,
 } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchIcon from '@mui/icons-material/Search';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
@@ -65,7 +66,7 @@ export default function LibrosPage() {
         </Typography>
         <Grid container spacing={3}>
           {[1, 2, 3, 4, 5, 6].map((n) => (
-            <Grid item xs={12} sm={6} md={4} key={n}>
+            <Grid xs={12} sm={6} md={4} key={n}>
               <Card>
                 <CardContent>
                   <Skeleton variant="text" height={40} />
@@ -139,7 +140,7 @@ export default function LibrosPage() {
         <Grid container spacing={3}>
           <AnimatePresence>
             {filteredLibros.map((libro, index) => (
-              <Grid item xs={12} sm={6} md={4} key={libro.id}>
+              <Grid xs={12} sm={6} md={4} key={libro.id}>
                 <MotionCard
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

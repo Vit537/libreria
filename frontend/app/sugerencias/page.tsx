@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { createSugerencia } from '@/lib/api';
 import {
   Container,
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -14,6 +13,7 @@ import {
   Alert,
   Snackbar,
 } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -90,7 +90,7 @@ export default function SugerenciasPage() {
       </Box>
 
       <Grid container spacing={4}>
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           <MotionCard
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -99,7 +99,7 @@ export default function SugerenciasPage() {
             <CardContent sx={{ p: 4 }}>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label="Tu Nombre"
@@ -110,7 +110,7 @@ export default function SugerenciasPage() {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label="Tu Email"
@@ -128,7 +128,7 @@ export default function SugerenciasPage() {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label="Título del Libro"
@@ -139,7 +139,7 @@ export default function SugerenciasPage() {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  <Grid xs={12} sm={6}>
                     <TextField
                       fullWidth
                       label="Autor del Libro"
@@ -150,7 +150,7 @@ export default function SugerenciasPage() {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid xs={12}>
                     <TextField
                       fullWidth
                       label="¿Por qué recomiendas este libro?"
@@ -169,7 +169,7 @@ export default function SugerenciasPage() {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid xs={12}>
                     <Button
                       type="submit"
                       variant="contained"
