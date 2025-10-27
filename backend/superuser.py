@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tu_proyecto.settings')  # Cambia 'tu_proyecto' por el nombre real
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')  # Cambia 'tu_proyecto' por el nombre real
 django.setup()
 
 from django.contrib.auth import get_user_model
