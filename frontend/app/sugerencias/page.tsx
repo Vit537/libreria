@@ -13,7 +13,6 @@ import {
   Alert,
   Snackbar,
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -89,8 +88,14 @@ export default function SugerenciasPage() {
         </Typography>
       </Box>
 
-      <Grid container spacing={4}>
-        <Grid xs={12} md={8}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 4,
+          gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
+        }}
+      >
+        <Box>
           <MotionCard
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -98,59 +103,57 @@ export default function SugerenciasPage() {
           >
             <CardContent sx={{ p: 4 }}>
               <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={3}>
-                  <Grid xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Tu Nombre"
-                      {...register('nombre', { required: 'El nombre es requerido' })}
-                      error={!!errors.nombre}
-                      helperText={errors.nombre?.message}
-                      disabled={loading}
-                    />
-                  </Grid>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 3,
+                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    label="Tu Nombre"
+                    {...register('nombre', { required: 'El nombre es requerido' })}
+                    error={!!errors.nombre}
+                    helperText={errors.nombre?.message}
+                    disabled={loading}
+                  />
 
-                  <Grid xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Tu Email"
-                      type="email"
-                      {...register('email', { 
-                        required: 'El email es requerido',
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Email inválido'
-                        }
-                      })}
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                      disabled={loading}
-                    />
-                  </Grid>
+                  <TextField
+                    fullWidth
+                    label="Tu Email"
+                    type="email"
+                    {...register('email', { 
+                      required: 'El email es requerido',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Email inválido'
+                      }
+                    })}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
+                    disabled={loading}
+                  />
 
-                  <Grid xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Título del Libro"
-                      {...register('libro_sugerido', { required: 'El título es requerido' })}
-                      error={!!errors.libro_sugerido}
-                      helperText={errors.libro_sugerido?.message}
-                      disabled={loading}
-                    />
-                  </Grid>
+                  <TextField
+                    fullWidth
+                    label="Título del Libro"
+                    {...register('libro_sugerido', { required: 'El título es requerido' })}
+                    error={!!errors.libro_sugerido}
+                    helperText={errors.libro_sugerido?.message}
+                    disabled={loading}
+                  />
 
-                  <Grid xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Autor del Libro"
-                      {...register('autor_sugerido', { required: 'El autor es requerido' })}
-                      error={!!errors.autor_sugerido}
-                      helperText={errors.autor_sugerido?.message}
-                      disabled={loading}
-                    />
-                  </Grid>
+                  <TextField
+                    fullWidth
+                    label="Autor del Libro"
+                    {...register('autor_sugerido', { required: 'El autor es requerido' })}
+                    error={!!errors.autor_sugerido}
+                    helperText={errors.autor_sugerido?.message}
+                    disabled={loading}
+                  />
 
-                  <Grid xs={12}>
+                  <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
                     <TextField
                       fullWidth
                       label="¿Por qué recomiendas este libro?"
@@ -167,9 +170,9 @@ export default function SugerenciasPage() {
                       helperText={errors.razon?.message}
                       disabled={loading}
                     />
-                  </Grid>
+                  </Box>
 
-                  <Grid xs={12}>
+                  <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
                     <Button
                       type="submit"
                       variant="contained"
@@ -188,14 +191,14 @@ export default function SugerenciasPage() {
                     >
                       {loading ? 'Enviando...' : 'Enviar Sugerencia'}
                     </Button>
-                  </Grid>
-                </Grid>
+                  </Box>
+                </Box>
               </form>
             </CardContent>
           </MotionCard>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} md={4}>
+        <Box>
           <MotionCard
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -211,8 +214,8 @@ export default function SugerenciasPage() {
               </Typography>
             </CardContent>
           </MotionCard>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
 
       <Snackbar
         open={showSuccess}
@@ -232,7 +235,3 @@ export default function SugerenciasPage() {
     </Container>
   );
 }
-
-
-// nuevos datos se instalara aqui
-// hola a todos

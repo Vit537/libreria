@@ -15,7 +15,6 @@ import {
   Alert,
   Skeleton,
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import { motion, AnimatePresence } from 'framer-motion';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -79,19 +78,23 @@ export default function LugaresPage() {
         <Typography variant="h3" gutterBottom fontWeight={700} mb={4}>
           Dónde Obtener Libros
         </Typography>
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 3,
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+          }}
+        >
           {[1, 2, 3].map((n) => (
-            <Grid xs={12} md={4} key={n}>
-              <Card>
-                <CardContent>
-                  <Skeleton variant="circular" width={60} height={60} />
-                  <Skeleton variant="text" height={40} sx={{ mt: 2 }} />
-                  <Skeleton variant="rectangular" height={80} sx={{ mt: 2 }} />
-                </CardContent>
-              </Card>
-            </Grid>
+            <Card key={n}>
+              <CardContent>
+                <Skeleton variant="circular" width={60} height={60} />
+                <Skeleton variant="text" height={40} sx={{ mt: 2 }} />
+                <Skeleton variant="rectangular" height={80} sx={{ mt: 2 }} />
+              </CardContent>
+            </Card>
           ))}
-        </Grid>
+        </Box>
       </Container>
     );
   }
@@ -155,112 +158,117 @@ export default function LugaresPage() {
           </Typography>
         </Box>
       ) : (
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 3,
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+          }}
+        >
           <AnimatePresence mode="wait">
             {filteredLugares.map((lugar, index) => {
               const tipoInfo = getTipoColor(lugar.tipo);
               const IconComponent = tipoInfo.icon;
 
-                return (
-                <Grid xs={12} sm={6} md={4} key={lugar.id}>
-                  <MotionCard
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{
-                      scale: 1.03,
-                      boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
+              return (
+                <MotionCard
+                  key={lugar.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileHover={{
+                    scale: 1.03,
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
+                  }}
+                  sx={{ height: '100%', position: 'relative', overflow: 'visible' }}
+                >
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: -20,
+                      right: 20,
+                      width: 70,
+                      height: 70,
+                      borderRadius: '50%',
+                      background: tipoInfo.bg,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.3)',
+                      zIndex: 1,
                     }}
-                    sx={{ height: '100%', position: 'relative', overflow: 'visible' }}
                   >
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: -20,
-                        right: 20,
-                        width: 70,
-                        height: 70,
-                        borderRadius: '50%',
-                        background: tipoInfo.bg,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.3)',
-                        zIndex: 1,
-                      }}
-                    >
-                      <IconComponent sx={{ color: 'white', fontSize: 36 }} />
+                    <IconComponent sx={{ color: 'white', fontSize: 36 }} />
+                  </Box>
+
+                  <CardContent sx={{ pt: 5 }}>
+                    <Box mb={2}>
+                      <Chip
+                        label={lugar.tipo_display || lugar.tipo}
+                        size="small"
+                        sx={{
+                          bgcolor: tipoInfo.bg,
+                          color: 'white',
+                          fontWeight: 600,
+                        }}
+                      />
                     </Box>
 
-                    <CardContent sx={{ pt: 5 }}>
-                      <Box mb={2}>
-                        <Chip
-                          label={lugar.tipo_display || lugar.tipo}
-                          size="small"
-                          sx={{
-                            bgcolor: tipoInfo.bg,
-                            color: 'white',
-                            fontWeight: 600,
-                          }}
-                        />
-                      </Box>
+                    <Typography variant="h5" gutterBottom fontWeight={700} color="primary">
+                      {lugar.nombre}
+                    </Typography>
 
-                      <Typography variant="h5" gutterBottom fontWeight={700} color="primary">
-                        {lugar.nombre}
+                    <Box display="flex" alignItems="flex-start" gap={1} mb={1.5}>
+                      <LocationOnIcon sx={{ fontSize: 20, color: 'text.secondary', mt: 0.3 }} />
+                      <Typography variant="body2" color="text.secondary">
+                        {lugar.direccion}
                       </Typography>
+                    </Box>
 
-                      <Box display="flex" alignItems="flex-start" gap={1} mb={1.5}>
-                        <LocationOnIcon sx={{ fontSize: 20, color: 'text.secondary', mt: 0.3 }} />
+                    {lugar.telefono && (
+                      <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+                        <PhoneIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
                         <Typography variant="body2" color="text.secondary">
-                          {lugar.direccion}
+                          {lugar.telefono}
                         </Typography>
                       </Box>
+                    )}
 
-                      {lugar.telefono && (
-                        <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-                          <PhoneIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {lugar.telefono}
-                          </Typography>
-                        </Box>
-                      )}
+                    {lugar.horario && (
+                      <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+                        <AccessTimeIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
+                        <Typography variant="body2" color="text.secondary">
+                          {lugar.horario}
+                        </Typography>
+                      </Box>
+                    )}
 
-                      {lugar.horario && (
-                        <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-                          <AccessTimeIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
-                          <Typography variant="body2" color="text.secondary">
-                            {lugar.horario}
-                          </Typography>
-                        </Box>
-                      )}
-
-                      {lugar.sitio_web && (
-                        <Box display="flex" alignItems="center" gap={1} mt={2}>
-                          <IconButton
-                            size="small"
-                            href={lugar.sitio_web}
-                            target="_blank"
-                            sx={{
-                              bgcolor: 'primary.main',
-                              color: 'white',
-                              '&:hover': { bgcolor: 'primary.dark' },
-                            }}
-                          >
-                            <LanguageIcon />
-                          </IconButton>
-                          <Typography variant="body2" fontWeight={600} color="primary">
-                            Visitar sitio web
-                          </Typography>
-                        </Box>
-                      )}
-                    </CardContent>
-                  </MotionCard>
-                </Grid>
+                    {lugar.sitio_web && (
+                      <Box display="flex" alignItems="center" gap={1} mt={2}>
+                        <IconButton
+                          size="small"
+                          href={lugar.sitio_web}
+                          target="_blank"
+                          sx={{
+                            bgcolor: 'primary.main',
+                            color: 'white',
+                            '&:hover': { bgcolor: 'primary.dark' },
+                          }}
+                        >
+                          <LanguageIcon />
+                        </IconButton>
+                        <Typography variant="body2" fontWeight={600} color="primary">
+                          Visitar sitio web
+                        </Typography>
+                      </Box>
+                    )}
+                  </CardContent>
+                </MotionCard>
               );
             })}
           </AnimatePresence>
-        </Grid>
+        </Box>
       )}
 
       <Card
