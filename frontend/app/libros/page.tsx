@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { getLibros, Libro } from '@/lib/api';
 import { 
   Container, 
-  
   Card, 
   CardContent, 
   Typography, 
@@ -79,7 +78,6 @@ export default function LibrosPage() {
           ))}
         </Grid>
       </Container>
-      // nuevo cambio henry
     );
   }
 
@@ -217,7 +215,3 @@ export default function LibrosPage() {
     </Container>
   );
 }
-
-
-
-// hola como estas?

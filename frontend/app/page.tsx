@@ -1,76 +1,7 @@
-// import Image from "next/image";
-
-// export default function Home() {
-//   return (
-//     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-//       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-//         <Image
-//           className="dark:invert"
-//           src="/next.svg"
-//           alt="Next.js logo"
-//           width={100}
-//           height={20}
-//           priority
-//         />
-//         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-//           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-//             To get started, edit the page.tsx file.
-//           </h1>
-//           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-//             Looking for a starting point or more instructions? Head over to{" "}
-//             <a
-//               href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-//               className="font-medium text-zinc-950 dark:text-zinc-50"
-//             >
-//               Templates
-//             </a>{" "}
-//             or the{" "}
-//             <a
-//               href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-//               className="font-medium text-zinc-950 dark:text-zinc-50"
-//             >
-//               Learning
-//             </a>{" "}
-//             center.
-//           </p>
-//         </div>
-//         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-//           <a
-//             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-//             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             <Image
-//               className="dark:invert"
-//               src="/vercel.svg"
-//               alt="Vercel logomark"
-//               width={16}
-//               height={16}
-//             />
-//             Deploy Now
-//           </a>
-//           <a
-//             className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-//             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             Documentation
-//           </a>
-          
-//         </div>
-//       </main>
-//     </div>
-//   );
-// }
-
-
 'use client';
 
 import Link from 'next/link';
 import { Container, Card, CardContent, Typography, Box, Button } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import { motion } from 'framer-motion';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
@@ -133,9 +64,16 @@ export default function Home() {
         </Typography>
       </Box>
 
-      <Grid container spacing={4} mb={8}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 4,
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+          mb: 8
+        }}
+      >
         {cards.map((card, index) => (
-          <Grid xs={12} md={4} key={card.title} data-aos="fade-up" data-aos-delay={index * 100}>
+          <Box key={card.title} data-aos="fade-up" data-aos-delay={index * 100}>
             <Link href={card.href} style={{ textDecoration: 'none' }}>
               <MotionCard
                 whileHover={{ 
@@ -184,9 +122,9 @@ export default function Home() {
                 </CardContent>
               </MotionCard>
             </Link>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
 
       <Card 
         sx={{ 
@@ -199,16 +137,23 @@ export default function Home() {
         <Typography variant="h4" gutterBottom textAlign="center" fontWeight={700}>
           ¿Por qué Librería Virtual?
         </Typography>
-        <Grid container spacing={3} mt={2}>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 3,
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+            mt: 2
+          }}
+        >
           {benefits.map((benefit, index) => (
-            <Grid xs={12} sm={6} key={index}>
+            <Box key={index}>
               <Box display="flex" alignItems="center" gap={2}>
                 <CheckCircleIcon sx={{ fontSize: 32 }} />
                 <Typography variant="h6">{benefit}</Typography>
               </Box>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
         <Box textAlign="center" mt={4}>
           <Link href="/libros" passHref legacyBehavior>
             <Button 
