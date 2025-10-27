@@ -1,0 +1,66 @@
+name: Deploy Frontend to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  REGION: us-central1
+  REPOSITORY: prueba-v2-registry
+  SERVICE_NAME: libreria-frontend
+  IMAGE_NAME: frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: frontend-cloud-run
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build and push Docker image
+        id: build
+        run: |
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "Building $IMAGE_URI"
+          docker build -t "$IMAGE_URI" ./frontend
+          docker push "$IMAGE_URI"
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          echo "Deploying $IMAGE_URI to Cloud Run ${{ env.SERVICE_NAME }}"
+          gcloud run deploy "${{ env.SERVICE_NAME }}" \
+            --image "$IMAGE_URI" \
+            --platform managed \
+            --region "${{ env.REGION }}" \
+            --allow-unauthenticated \
+            --set-env-vars "NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}" \
+            --port 3000
+
+      - name: Show service URL
+        run: |
+          gcloud run services describe "${{ env.SERVICE_NAME }}" --region "${{ env.REGION }}" --format="value(status.url)"
